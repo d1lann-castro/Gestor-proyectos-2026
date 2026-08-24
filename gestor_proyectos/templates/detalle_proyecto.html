@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ proyecto.nombre }} | Gestor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-slate-100 text-slate-800">
+    <main class="mx-auto flex min-h-screen w-full max-w-3xl items-center px-4 py-8 sm:px-6">
+        <section class="w-full rounded-3xl border border-slate-200 bg-white p-6 shadow-xl sm:p-8">
+
+            <div class="flex flex-col gap-4 border-b border-slate-200 pb-6 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                    <a href="{% url 'proyectos' %}" class="text-sm text-indigo-600 hover:text-indigo-700">
+                        ← Volver a proyectos
+                    </a>
+                    <h1 class="mt-2 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+                        {{ proyecto.nombre }}
+                    </h1>
+                </div>
+
+                <span class="w-fit rounded-full bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-700">
+                    ID {{ proyecto.id }}
+                </span>
+            </div>
+
+            <dl class="mt-6 space-y-6">
+                <div>
+                    <dt class="text-xs font-semibold uppercase tracking-wider text-slate-400">
+                        Descripción
+                    </dt>
+                    <dd class="mt-2 whitespace-pre-line text-base leading-7 text-slate-700">
+                        {{ proyecto.descripcion }}
+                    </dd>
+                </div>
+
+                <div class="border-t border-slate-100 pt-6">
+                    <dt class="text-xs font-semibold uppercase tracking-wider text-slate-400">
+                        Duración estimada
+                    </dt>
+                    <dd class="mt-2 text-lg font-semibold text-slate-800">
+                        {{ proyecto.duracion }} día{{ proyecto.duracion|pluralize }}
+                    </dd>
+                </div>
+            </dl>
+
+            <div class="mt-8 flex flex-col gap-3 border-t border-slate-200 pt-6 sm:flex-row">
+                <a href="{% url 'proyectos' %}"
+                   class="inline-flex justify-center rounded-xl border border-slate-300 px-5 py-3 text-sm font-medium text-slate-700 hover:bg-slate-50">
+                    Volver
+                </a>
+
+                <form method="post" action="{% url 'eliminar_proyecto' proyecto.id %}"
+                      onsubmit="return confirm('¿Seguro que deseas eliminar este proyecto?');">
+                    {% csrf_token %}
+                    <button type="submit"
+                            class="w-full rounded-xl bg-rose-600 px-5 py-3 text-sm font-semibold text-white hover:bg-rose-700 sm:w-auto">
+                        Eliminar proyecto
+                    </button>
+                </form>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

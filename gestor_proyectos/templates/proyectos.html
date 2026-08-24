@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proyectos | Gestor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-slate-100 text-slate-800">
+    <main class="mx-auto w-full max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
+
+        <header class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+                <a href="{% url 'home' %}" class="text-sm text-indigo-600 hover:text-indigo-700">
+                    ← Inicio
+                </a>
+                <h1 class="mt-2 text-3xl font-bold tracking-tight text-slate-900">Proyectos</h1>
+                <p class="mt-1 text-sm text-slate-500">Lista de proyectos registrados.</p>
+            </div>
+
+            <a href="{% url 'nuevo_proyecto' %}"
+               class="inline-flex items-center justify-center rounded-xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700">
+                + Nuevo proyecto
+            </a>
+        </header>
+
+        {% if messages %}
+            <div class="mb-6 space-y-2">
+                {% for message in messages %}
+                    <div class="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% if proyectos %}
+            <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+                <ul class="divide-y divide-slate-100">
+                    {% for proyecto in proyectos %}
+                        <li class="p-5 transition hover:bg-slate-50 sm:p-6">
+                            <div class="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+                                <div class="min-w-0 flex-1">
+                                    <div class="flex flex-wrap items-center gap-2">
+                                        <h2 class="text-lg font-semibold text-slate-900">
+                                            {{ proyecto.nombre }}
+                                        </h2>
+                                        <span class="rounded-full bg-indigo-50 px-2.5 py-1 text-xs font-medium text-indigo-700">
+                                            ID {{ proyecto.id }}
+                                        </span>
+                                    </div>
+
+                                    <p class="mt-2 text-sm leading-6 text-slate-600">
+                                        {{ proyecto.descripcion }}
+                                    </p>
+
+                                    <p class="mt-3 text-sm text-slate-500">
+                                        <span class="font-medium text-slate-700">Duración:</span>
+                                        {{ proyecto.duracion }} día{{ proyecto.duracion|pluralize }}
+                                    </p>
+                                </div>
+
+                                <div class="flex flex-col gap-2 sm:flex-row">
+                                    <a href="{% url 'ver_proyecto' proyecto.id %}"
+                                       class="inline-flex items-center justify-center rounded-xl border border-indigo-200 bg-indigo-50 px-4 py-2.5 text-sm font-medium text-indigo-700 transition hover:bg-indigo-100">
+                                        Ver detalle
+                                    </a>
+
+                                    <form method="post" action="{% url 'eliminar_proyecto' proyecto.id %}"
+                                          onsubmit="return confirm('¿Seguro que deseas eliminar este proyecto?');">
+                                        {% csrf_token %}
+                                        <button type="submit"
+                                                class="w-full rounded-xl border border-rose-200 bg-rose-50 px-4 py-2.5 text-sm font-medium text-rose-700 transition hover:bg-rose-100 sm:w-auto">
+                                            Eliminar
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </section>
+        {% else %}
+            <section class="rounded-2xl border border-dashed border-slate-300 bg-white px-6 py-16 text-center shadow-sm">
+                <h2 class="text-xl font-semibold text-slate-800">No hay proyectos</h2>
+                <p class="mt-2 text-sm text-slate-500">Crea tu primer proyecto para comenzar.</p>
+                <a href="{% url 'nuevo_proyecto' %}"
+                   class="mt-6 inline-flex rounded-xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white hover:bg-indigo-700">
+                    Crear proyecto
+                </a>
+            </section>
+        {% endif %}
+
+        <footer class="mt-6 flex items-center justify-between text-xs text-slate-400">
+            <span>{{ proyectos|length }} proyecto{{ proyectos|pluralize }}</span>
+            <span>Django · Gestor de Proyectos</span>
+        </footer>
+    </main>
+</body>
+</html>

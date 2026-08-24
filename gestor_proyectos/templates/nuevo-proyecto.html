@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nuevo proyecto | Gestor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-slate-100 text-slate-800">
+    <main class="mx-auto w-full max-w-2xl px-4 py-8 sm:px-6">
+        <section class="rounded-3xl border border-slate-200 bg-white p-6 shadow-xl sm:p-8">
+
+            <div class="mb-8">
+                <a href="{% url 'proyectos' %}" class="text-sm text-indigo-600 hover:text-indigo-700">
+                    ← Volver a proyectos
+                </a>
+                <h1 class="mt-2 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+                    Crear nuevo proyecto
+                </h1>
+                <p class="mt-2 text-sm text-slate-500">
+                    Completa los tres campos para registrar el proyecto.
+                </p>
+            </div>
+
+            {% if errores %}
+                <div class="mb-6 rounded-xl border border-rose-200 bg-rose-50 p-4">
+                    <p class="font-semibold text-rose-800">Revisa los siguientes datos:</p>
+                    <ul class="mt-2 list-disc space-y-1 pl-5 text-sm text-rose-700">
+                        {% for error in errores %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+
+            <form method="post" action="{% url 'crear_proyecto' %}" class="space-y-6">
+                {% csrf_token %}
+
+                <div>
+                    <label for="nombre" class="mb-2 block text-sm font-semibold text-slate-700">
+                        Nombre del proyecto
+                    </label>
+                    <input type="text" id="nombre" name="nombre" maxlength="100" required
+                           value="{{ nombre|default:'' }}"
+                           placeholder="Ej. Sistema de gestión"
+                           class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100">
+                </div>
+
+                <div>
+                    <label for="descripcion" class="mb-2 block text-sm font-semibold text-slate-700">
+                        Descripción
+                    </label>
+                    <textarea id="descripcion" name="descripcion" rows="5" maxlength="500" required
+                              placeholder="Describe brevemente el proyecto..."
+                              class="w-full resize-y rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100">{{ descripcion|default:'' }}</textarea>
+                    <p class="mt-1 text-xs text-slate-400">Máximo 500 caracteres.</p>
+                </div>
+
+                <div>
+                    <label for="duracion" class="mb-2 block text-sm font-semibold text-slate-700">
+                        Duración estimada
+                    </label>
+                    <div class="flex">
+                        <input type="number" id="duracion" name="duracion" min="1" required
+                               value="{{ duracion|default:'' }}"
+                               placeholder="Ej. 45"
+                               class="w-full rounded-l-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100">
+                        <span class="inline-flex items-center rounded-r-xl border border-l-0 border-slate-300 bg-slate-50 px-4 text-sm text-slate-500">
+                            días
+                        </span>
+                    </div>
+                </div>
+
+                <div class="flex flex-col gap-3 border-t border-slate-200 pt-6 sm:flex-row sm:justify-end">
+                    <a href="{% url 'proyectos' %}"
+                       class="inline-flex justify-center rounded-xl border border-slate-300 px-5 py-3 text-sm font-medium text-slate-700 hover:bg-slate-50">
+                        Cancelar
+                    </a>
+                    <button type="submit"
+                            class="inline-flex justify-center rounded-xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-100">
+                        Crear proyecto
+                    </button>
+                </div>
+            </form>
+        </section>
+    </main>
+</body>
+</html>
