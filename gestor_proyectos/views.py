@@ -1,6 +1,6 @@
 from django.contrib import messages
 from django.shortcuts import get_object_or_404, redirect, render
-from .models import Proyecto
+from .models import Proyecto, Tarea
 
 
 def home(request):
@@ -40,6 +40,7 @@ def nuevos_registros(request):
 
 def ver_proyecto(request, id):
     proyecto = get_object_or_404(Proyecto, id=id)
+    print(proyecto.tareas)
     return render(request, "detalle_proyecto.html", {"proyecto": proyecto})
 
 
@@ -111,32 +112,67 @@ def eliminar_proyecto(request, id):
     proyecto.delete()
     return redirect("proyectos")
 
-'''
-def eliminar_proyecto(request, id):
-    proyecto = get_object_or_404(Proyecto, id=id)
+
+def editar_proyecto(request, id):
+    proyecto = Proyecto.objects.get(id= id )
+
+
+    if request.method == 'POST':
+        nombre = request.POST.get('nombre').strip()
+        descripcion = request.POST.get('descripcion')
+        duarcion = request.POST.get('duarcion')
+
+
+        if nombre and descripcion and duarcion:
+            proyecto.nombre= nombre
+            proyecto.descripcion= descripcion
+            proyecto.duarcion= int(duarcion)
+            proyecto.save()
+
+
+            return redirect('ver_proyecto', id=proyecto.id)        
+
+
+    return render (request, 'editar_proyecto.html', {'proyecto': proyecto})
+
+def crear_tarea(request, proyecto_id):
+    proyecto = get_object_or_404(Proyecto, id=proyecto_id)
 
     if request.method == "POST":
-        proyecto.delete()
-        messages.success(request, "El proyecto se eliminó correctamente.")
-        return redirect("proyectos")
+        titulo = request.POST.get('titulo').strip()
+        prioridad= request.POST.get('prioridad')
+        estado= request.POST.get('estado')
 
-    return redirect("ver_proyecto", id=proyecto.id)
-'''
-'''
-def crear_proyecto(request):
-    nombre = request.POST.get('nombre')
-    descripcion = request.POST.get('descripcion')
-    duracion = request.POST.get('duracion')
+        if titulo:
+            tarea = Tarea(
+                titulo=titulo, 
+                prioridad=prioridad, 
+                estado=estado)
+            tarea.save()
 
-    if nombre and descripcion and duracion:
-        proyecto = Proyecto.objects.create(
-            nombre=nombre,
-            descripcion=descripcion,
-            duracion=duracion,
-        )
-        proyecto.save()
+            return redirect('ver_proyecto', id=proyecto_id)
 
-        return redirect('proyectos')
-                                        
-    return render(request, 'nuevo-proyecto.html')
-'''
+    datos = {
+        'proyecto': proyecto,
+        'prioridad_choices': Tarea.PRIORIDAD_CHOICES,
+        'estado_choices': Tarea.ESTADO_CHOICES
+    }
+
+    return render(request, 'crear_tarea.html', datos)
+
+def avanzar_estado_tarea (request,id):
+    tarea = get_object_or_404(Tarea, id=id)
+
+    if tarea.estado == "PENDIENTE":
+        tarea.estado == "EN_PROGRESO"
+        tarea.save()
+    elif tarea.estado == "EN_PROGRESO":
+        tarea.estado = "COMPLETADO"
+        tarea.save()
+
+    return redirect('ver_proyecto', id = tarea.proyecto.id)
+
+
+        
+
+ 

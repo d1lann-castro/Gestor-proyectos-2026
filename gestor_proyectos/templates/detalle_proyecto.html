@@ -1,81 +1,142 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ proyecto.nombre }} | Gestor</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Detalle del Proyecto · Gestor</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
 </head>
-<body class="min-h-screen bg-slate-100 text-slate-800">
-    <main class="mx-auto flex min-h-screen w-full max-w-3xl items-center px-4 py-8 sm:px-6">
-        <section class="w-full rounded-3xl border border-slate-200 bg-white p-6 shadow-xl sm:p-8">
+<body class="min-h-screen flex items-center justify-center p-4 md:p-8 font-sans antialiased bg-slate-50">
 
-            <div class="flex flex-col gap-4 border-b border-slate-200 pb-6 sm:flex-row sm:items-center sm:justify-between">
-                <div>
-                    <a href="{% url 'proyectos' %}" class="text-sm text-indigo-600 hover:text-indigo-700">
-                        ← Volver a proyectos
-                    </a>
-                    <h1 class="mt-2 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
-                        {{ proyecto.nombre }}
-                    </h1>
+    <div class="w-full max-w-2xl bg-white/70 backdrop-blur-sm rounded-3xl shadow-xl p-6 md:p-10 border border-white/40">
+
+        <!-- Cabecera -->
+        <div class="flex items-center gap-3 mb-8 border-b border-slate-200/80 pb-5">
+            <div class="bg-indigo-100 p-3 rounded-xl text-indigo-600">
+                <i class="fa-regular fa-folder-open text-2xl"></i>
+            </div>
+            <div class="flex-1">
+                <h1 class="text-2xl md:text-3xl font-bold text-slate-800 tracking-tight">
+                    Detalle del proyecto
+                </h1>
+                <p class="text-sm text-slate-500 font-light">
+                    Información completa del proyecto seleccionado
+                </p>
+            </div>
+            <a href="{% url 'proyectos' %}" 
+               class="inline-flex items-center gap-1.5 px-4 py-2 bg-slate-100 text-slate-600 text-sm font-medium rounded-xl border border-slate-200/60 hover:bg-slate-200 hover:border-slate-300 transition-all duration-150 shadow-sm hover:shadow">
+                <i class="fa-solid fa-arrow-left"></i>
+                <span class="hidden sm:inline">Volver</span>
+            </a>
+        </div>
+
+        <!-- Tarjeta de detalle -->
+        <div class="bg-white rounded-2xl p-6 md:p-8 border border-slate-100 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
+
+            <!-- Nombre del proyecto -->
+            <div class="flex items-start gap-3 mb-6">
+                <div class="bg-indigo-50 p-2.5 rounded-xl text-indigo-500 mt-0.5">
+                    <i class="fa-solid fa-font-awesome"></i>
                 </div>
-
-                <span class="w-fit rounded-full bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-700">
-                    ID {{ proyecto.id }}
-                </span>
+                <div>
+                    <h2 class="text-xl md:text-2xl font-bold text-slate-800 break-words">
+                        {{ proyecto.nombre }}
+                    </h2>
+                    <span class="inline-block mt-1.5 text-xs font-mono bg-indigo-50 text-indigo-600 px-3 py-0.5 rounded-full border border-indigo-100/70">
+                        <i class="fa-solid fa-hashtag"></i> ID: {{ proyecto.id }}
+                    </span>
+                </div>
             </div>
 
-            <dl class="mt-6 space-y-6">
-                <div>
-                    <dt class="text-xs font-semibold uppercase tracking-wider text-slate-400">
+            <!-- Descripción -->
+            <div class="flex items-start gap-3 mb-6 border-t border-slate-100 pt-5">
+                <div class="bg-slate-50 p-2.5 rounded-xl text-slate-400 mt-0.5">
+                    <i class="fa-solid fa-align-left"></i>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">
                         Descripción
-                    </dt>
-                    <dd class="mt-2 whitespace-pre-line text-base leading-7 text-slate-700">
+                    </p>
+                    <p class="text-base text-slate-700 leading-relaxed mt-1 break-words">
                         {{ proyecto.descripcion }}
-                    </dd>
+                    </p>
                 </div>
+            </div>
 
-                <div class="border-t border-slate-100 pt-6">
-                    <dt class="text-xs font-semibold uppercase tracking-wider text-slate-400">
-                        Duración estimada
-                    </dt>
-                    <dd class="mt-2 text-lg font-semibold text-slate-800">
-                        {{ proyecto.duracion }} día{{ proyecto.duracion|pluralize }}
-                    </dd>
+            <!-- Duración -->
+            <div class="flex items-start gap-3 border-t border-slate-100 pt-5">
+                <div class="bg-slate-50 p-2.5 rounded-xl text-slate-400 mt-0.5">
+                    <i class="fa-regular fa-clock"></i>
                 </div>
-            </dl>
-
-            <div class="mt-6 bg-white rounded-2xl p-6 md:p-8 border border-slate-100 shadow-sm">
-            <div class="flex items-center justify-between gap-4 mb-5">
                 <div>
-                    <h2 class="text-xl font-bold text-slate-800 mt-1">
-                        Tareas del proyecto
-                    </h2>
+                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                        Duración estimada
+                    </p>
+                    <p class="text-base text-slate-700 font-medium mt-1 flex items-center gap-2">
+                        <span class="bg-indigo-50/70 px-3 py-1 rounded-full text-indigo-700 border border-indigo-100/60">
+                            {{ proyecto.duarcion }}
+                        </span>
+                        <span class="text-xs text-slate-400 font-light">(tiempo estimado)</span>
+                    </p>
                 </div>
+            </div>
+        </div>
+
+        <!-- Sección de tareas -->
+        <div class="mt-6 bg-white rounded-2xl p-6 md:p-8 border border-slate-100 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
+            <div class="flex items-center justify-between gap-4 mb-5">
+                <h3 class="text-xl font-bold text-slate-800">
+                    Tareas del proyecto
+                </h3>
                 <a href="{% url 'crear_tarea' proyecto.id %}"
                    class="inline-flex items-center gap-1.5 px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-xl border border-indigo-600 hover:bg-indigo-700 transition-colors shadow-sm">
                     <i class="fa-solid fa-plus"></i>
                     <span class="hidden sm:inline">Nueva tarea</span>
                 </a>
             </div>
+            <ul class="space-y-1.5">
+                {% for tarea in proyecto.tareas.all %}
+                    <li class="px-3 py-2 bg-slate-50 rounded-lg border-l-4 border-indigo-200 text-slate-700 text-sm hover:bg-slate-100 transition-colors">
+                        {{ tarea.titulo }}
+                        <span class="text-xs text-slate-400 font-medium">
+                            · Prioridad: {{ tarea.get_prioridad_display }}
+                            · Estado: {{ tarea.get_estado_display }}
+                        </span>
+                        <a href="{% url 'avanzar_estado_tarea' tarea.id %}"></a>
+                    </li>
+                {% empty %}
+                    <li class="text-slate-400 text-sm py-2 px-1">
+                        <i class="fa-regular fa-circle mr-2"></i>
+                        Este proyecto aún no tiene tareas.
+                    </li>
+                {% endfor %}
+            </ul>
         </div>
 
-            <div class="mt-8 flex flex-col gap-3 border-t border-slate-200 pt-6 sm:flex-row">
-                <a href="{% url 'proyectos' %}"
-                   class="inline-flex justify-center rounded-xl border border-slate-300 px-5 py-3 text-sm font-medium text-slate-700 hover:bg-slate-50">
-                    Volver
-                </a>
+        <!-- Botones de acción -->
+        <div class="mt-6 flex flex-col sm:flex-row gap-3 justify-between items-center">
+            <a href="{% url 'editar_proyecto' proyecto.id %}" 
+               class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 hover:shadow-lg transition-all duration-150 shadow-md hover:shadow-indigo-200/50">
+                <i class="fa-solid fa-pen-to-square"></i>
+                Editar proyecto
+            </a>
 
-                <form method="post" action="{% url 'eliminar_proyecto' proyecto.id %}"
-                      onsubmit="return confirm('¿Seguro que deseas eliminar este proyecto?');">
-                    {% csrf_token %}
-                    <button type="submit"
-                            class="w-full rounded-xl bg-rose-600 px-5 py-3 text-sm font-semibold text-white hover:bg-rose-700 sm:w-auto">
-                        Eliminar proyecto
-                    </button>
-                </form>
+            <div class="text-xs text-slate-400/80 flex items-center gap-4">
+                <span class="flex items-center gap-1.5">
+                    <i class="fa-regular fa-circle-check text-emerald-400"></i>
+                    Vista detallada
+                </span>
+                <span class="flex items-center gap-1.5">
+                    <i class="fa-solid fa-arrow-right"></i>
+                    <a href="{% url 'proyectos' %}" class="hover:text-indigo-500 transition-colors">
+                        Ir a la lista
+                    </a>
+                </span>
             </div>
-        </section>
-    </main>
+        </div>
+
+    </div>
+
 </body>
 </html>

@@ -4,5 +4,5 @@ from .models import Proyecto
 
 @admin.register(Proyecto)
 class ProyectoAdmin(admin.ModelAdmin):
-    list_display = ("id", "nombre", "duracion")
+    list_display = ("id", "nombre")
     search_fields = ("nombre", "descripcion")
