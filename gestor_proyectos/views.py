@@ -40,35 +40,23 @@ def nuevos_registros(request):
 
 def ver_proyecto(request, id):
     proyecto = get_object_or_404(Proyecto, id=id)
-    print(proyecto.tareas)
     return render(request, "detalle_proyecto.html", {"proyecto": proyecto})
 
 
 def nuevo_proyecto(request):
-    if request.method == "POST":
-        nombre = request.POST.get('nombre')
-        descripcion = request.POST.get('descripcion')
-        duracion = request.POST.get('duracion')
-
-        if nombre and descripcion and duracion:
-            proyecto = Proyecto.objects.create(
-                nombre=nombre,
-                descripcion=descripcion,
-                duracion=duracion,
-            )
-            proyecto.save()
-            return redirect('proyectos')
-
+    """Muestra el formulario para crear un nuevo proyecto."""
     return render(request, 'nuevo-proyecto.html')
 
 
 def crear_proyecto(request):
+    """Procesa el envío del formulario incluyendo archivos/imágenes."""
     if request.method != "POST":
         return redirect("nuevo_proyecto")
 
     nombre = request.POST.get("nombre", "").strip()
     descripcion = request.POST.get("descripcion", "").strip()
     duracion_raw = request.POST.get("duracion", "").strip()
+    imagen = request.FILES.get("imagen")  # Captura la imagen de request.FILES
 
     errores = []
 
@@ -98,57 +86,64 @@ def crear_proyecto(request):
             },
         )
 
-    Proyecto.objects.create(
-        nombre=nombre,
-        descripcion=descripcion,
-        duracion=duracion,
-    )
+    # Crea el proyecto guardando la imagen si fue enviada
+    proyecto_kwargs = {
+        "nombre": nombre,
+        "descripcion": descripcion,
+        "duracion": duracion,
+    }
+    if imagen:
+        proyecto_kwargs["imagen"] = imagen
+
+    Proyecto.objects.create(**proyecto_kwargs)
 
     messages.success(request, "El proyecto se creó correctamente.")
     return redirect("proyectos")
 
+
 def eliminar_proyecto(request, id):
-    proyecto = Proyecto.objects.get(id= id)
+    proyecto = get_object_or_404(Proyecto, id=id)
     proyecto.delete()
     return redirect("proyectos")
 
 
 def editar_proyecto(request, id):
-    proyecto = Proyecto.objects.get(id= id )
-
+    proyecto = get_object_or_404(Proyecto, id=id)
 
     if request.method == 'POST':
-        nombre = request.POST.get('nombre').strip()
-        descripcion = request.POST.get('descripcion')
-        duarcion = request.POST.get('duarcion')
+        nombre = request.POST.get('nombre', '').strip()
+        descripcion = request.POST.get('descripcion', '').strip()
+        duracion = request.POST.get('duracion')
+        imagen = request.FILES.get('imagen')
 
-
-        if nombre and descripcion and duarcion:
-            proyecto.nombre= nombre
-            proyecto.descripcion= descripcion
-            proyecto.duarcion= int(duarcion)
+        if nombre and descripcion and duracion:
+            proyecto.nombre = nombre
+            proyecto.descripcion = descripcion
+            proyecto.duracion = int(duracion)
+            if imagen:
+                proyecto.imagen = imagen
             proyecto.save()
-
 
             return redirect('ver_proyecto', id=proyecto.id)        
 
+    return render(request, 'editar_proyecto.html', {'proyecto': proyecto})
 
-    return render (request, 'editar_proyecto.html', {'proyecto': proyecto})
 
 def crear_tarea(request, proyecto_id):
     proyecto = get_object_or_404(Proyecto, id=proyecto_id)
 
     if request.method == "POST":
-        titulo = request.POST.get('titulo').strip()
-        prioridad= request.POST.get('prioridad')
-        estado= request.POST.get('estado')
+        titulo = request.POST.get('titulo', '').strip()
+        prioridad = request.POST.get('prioridad')
+        estado = request.POST.get('estado')
 
         if titulo:
-            tarea = Tarea(
+            Tarea.objects.create(
+                proyecto=proyecto,
                 titulo=titulo, 
                 prioridad=prioridad, 
-                estado=estado)
-            tarea.save()
+                estado=estado
+            )
 
             return redirect('ver_proyecto', id=proyecto_id)
 
@@ -160,19 +155,15 @@ def crear_tarea(request, proyecto_id):
 
     return render(request, 'crear_tarea.html', datos)
 
-def avanzar_estado_tarea (request,id):
+
+def avanzar_estado_tarea(request, id):
     tarea = get_object_or_404(Tarea, id=id)
 
     if tarea.estado == "PENDIENTE":
-        tarea.estado == "EN_PROGRESO"
+        tarea.estado = "EN_PROGRESO"
         tarea.save()
     elif tarea.estado == "EN_PROGRESO":
         tarea.estado = "COMPLETADO"
         tarea.save()
 
-    return redirect('ver_proyecto', id = tarea.proyecto.id)
-
-
-        
-
- 
+    return redirect('ver_proyecto', id=tarea.proyecto.id)
