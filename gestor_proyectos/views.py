@@ -1,12 +1,13 @@
 from django.contrib import messages
 from django.shortcuts import get_object_or_404, redirect, render
 from .models import Proyecto, Tarea
+from django.contrib.auth.decorators import login_required
 
 
 def home(request):
     return render(request, "home.html")
 
-
+@login_required
 def mostrar_proyectos(request):
     proyectos = Proyecto.objects.all().order_by("-id")
     return render(request, "proyectos.html", {"proyectos": proyectos})
@@ -167,3 +168,7 @@ def avanzar_estado_tarea(request, id):
         tarea.save()
 
     return redirect('ver_proyecto', id=tarea.proyecto.id)
+
+def acerca_de(request):
+    """Muestra la información del sistema y del desarrollador."""
+    return render(request, "acerca_de.html")
