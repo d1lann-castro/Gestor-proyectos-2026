@@ -1,12 +1,13 @@
 from django.contrib import messages
 from django.shortcuts import get_object_or_404, redirect, render
 from .models import Proyecto, Tarea
+from django.contrib.auth.decorators import login_required
 
 
 def home(request):
     return render(request, "home.html")
 
-
+@login_required
 def mostrar_proyectos(request):
     proyectos = Proyecto.objects.all().order_by("-id")
     return render(request, "proyectos.html", {"proyectos": proyectos})

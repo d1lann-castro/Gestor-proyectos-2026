@@ -19,6 +19,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # Tu app
     'gestor_proyectos',
+    'accounts'
 ]
 
 MIDDLEWARE = [
@@ -73,3 +74,8 @@ STATICFILES_DIRS = [
 # Archivos multimedia (subidos por el usuario)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+# Redirecciones de Autenticación
+LOGIN_REDIRECT_URL = 'proyectos'  # Página a la que va tras iniciar sesión
+LOGOUT_REDIRECT_URL = 'login'      # Página a la que va tras cerrar sesión
+LOGIN_URL = 'login'                # Ruta a la que se envía si intenta acceder a una vista protegida
