@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Proyecto
+from .models import Proyecto,Tarea
 
 
 @admin.register(Proyecto)

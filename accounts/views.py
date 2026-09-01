@@ -11,4 +11,4 @@ def registro(request):
             return redirect ('home')
     else:
         form = UserCreationForm()
-    return render(request, 'registro.html', {'form: form'})
+        return render(request, 'registro.html', {'form': form})

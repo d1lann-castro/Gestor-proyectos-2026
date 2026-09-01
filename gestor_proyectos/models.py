@@ -9,6 +9,9 @@ class Proyecto(models.Model):
     duracion = models.IntegerField() #Campo numerico entero
     imagen = models.ImageField(upload_to='img/', default='img/logo.png') #Campo de imagen
 
+    def __str__(self):
+        return self.nombre
+
     
 
 class Tarea(models.Model):
@@ -46,3 +49,6 @@ class Tarea(models.Model):
         choices= ESTADO_CHOICES,
         default='PENDIENTE',
     )
+
+    def __str__(self):
+        return self.titulo + "(" + self.proyecto.nombre + ")"
