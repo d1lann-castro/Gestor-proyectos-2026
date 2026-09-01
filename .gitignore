@@ -1,5 +1,4 @@
-#Entonrno virtual
-venv/
-
-# Base de datos local
+*.pyc
+__pycache__/
 db.sqlite3
+.venv/
