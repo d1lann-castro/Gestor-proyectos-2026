@@ -167,3 +167,7 @@ def avanzar_estado_tarea(request, id):
         tarea.save()
 
     return redirect('ver_proyecto', id=tarea.proyecto.id)
+
+def acerca_de(request):
+    """Muestra la información del sistema y del desarrollador."""
+    return render(request, "acerca_de.html")
