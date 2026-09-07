@@ -45,6 +45,6 @@ def grupos(request):
         nombre = request.POST.get('nombre').strip()
         if nombre and not Group.objects.filter(name = nombre).exists():
             return redirect('grupos')
-    grupos = Group.objects.filter(name=nombre).exists()
-    
+        return redirect ('grupos')
+    grupos = Group.objects.all()
     return render(request, 'grupos.html', {'grupos': grupos})
