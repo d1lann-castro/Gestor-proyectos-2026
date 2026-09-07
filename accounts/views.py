@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 
 def registro(request):
     datos= ''
@@ -39,3 +39,12 @@ def registro(request):
             login(request, user)
             return redirect ('home')
     return render(request, 'registro.html', {'errors': errors, 'datos': datos})
+
+def grupos(request):
+    if request.method == "POST":
+        nombre = request.POST.get('nombre').strip()
+        if nombre and not Group.objects.filter(name = nombre).exists():
+            return redirect('grupos')
+    grupos = Group.objects.filter(name=nombre).exists()
+    
+    return render(request, 'grupos.html', {'grupos': grupos})
