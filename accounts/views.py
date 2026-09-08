@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login
 from django.contrib.auth.models import User, Group
 from django.contrib.auth.decorators import user_passes_test
@@ -41,15 +41,38 @@ def registro(request):
             return redirect ('home')
     return render(request, 'registro.html', {'errors': errors, 'datos': datos})
 
-def es_admin(request):
+def es_admin(user):
     return user.is_authenticated and user.is_staff
 
-@user_passes_test
+@user_passes_test(es_admin)
 def grupos(request):
     if request.method == "POST":
         nombre = request.POST.get('nombre').strip()
-        if nombre and not Group.objects.filter(name = nombre).exists():
+        
+        # Comprueba que no esté vacío y no exista ya en la base de datos
+        if nombre and not Group.objects.filter(name=nombre).exists():
+            # Falta esta línea para registrarlo realmente
+            Group.objects.create(name=nombre)
             return redirect('grupos')
-        return redirect ('grupos')
+            
+        return redirect('grupos')
+        
     grupos = Group.objects.all()
     return render(request, 'grupos.html', {'grupos': grupos})
+
+@user_passes_test(es_admin)
+def eliminar_grupo(request, group_id):
+    grupo = get_object_or_404(Group, id=group_id)
+    grupo.delete()
+    return redirect('grupos')
+
+@user_passes_test(es_admin)
+def editar_grupo(request, group_id):
+    grupo = get_object_or_404(Group, id=group_id)
+    if request.method == 'POST':
+        nuevo_nombre = request.POST.get('nombre').strip()
+        if nuevo_nombre and not Group.objects.filter(name=nuevo_nombre).exclude(id=group_id).exists():
+            grupo.name = nuevo_nombre
+            grupo.save()
+            return redirect('grupos')
+    return render(request, 'editar_grupo.html', {'grupo': grupo})
