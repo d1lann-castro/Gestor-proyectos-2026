@@ -79,3 +79,6 @@ MEDIA_ROOT = BASE_DIR / 'media'
 LOGIN_REDIRECT_URL = 'proyectos'  # Página a la que va tras iniciar sesión
 LOGOUT_REDIRECT_URL = 'login'      # Página a la que va tras cerrar sesión
 LOGIN_URL = 'login'                # Ruta a la que se envía si intenta acceder a una vista protegida
+
+SESSION_COOKIE_AGE = 900
+SESSION_SAVE_EVERY_REQUEST = True

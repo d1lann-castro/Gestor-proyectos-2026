@@ -76,3 +76,37 @@ def editar_grupo(request, group_id):
             grupo.save()
             return redirect('grupos')
     return render(request, 'editar_grupo.html', {'grupo': grupo})
+
+
+@user_passes_test(es_admin)
+def ver_usuarios_grupo(request, id_grupo):
+
+    grupo = get_object_or_404(Group, id=id_grupo)
+    
+    # Usuarios en el grupo y usuarios sin asignar
+    usuarios_grupo = grupo.user_set.all()
+    usuarios_disponibles = User.objects.exclude(groups=grupo)
+
+    return render(request, 'ver_usuarios_grupo.html', {
+        'grupo': grupo,
+        'usuarios_grupo': usuarios_grupo,
+        'usuarios_disponibles': usuarios_disponibles
+    })
+
+@user_passes_test(es_admin)
+def agregar_usuario_grupo(request, id_grupo):
+    if request.method == 'POST':
+        grupo = get_object_or_404(Group, id=id_grupo)
+        usuario_id = request.POST.get('usuario_id')
+        if usuario_id:
+            user = get_object_or_404(User, id=usuario_id)
+            grupo.user_set.add(user)
+    return redirect('ver_usuarios_grupo', id_grupo=id_grupo)
+
+@user_passes_test(es_admin)
+def remover_usuario_grupo(request, id_grupo, id_usuario):
+    if request.method == 'POST':
+        grupo = get_object_or_404(Group, id=id_grupo)
+        user = get_object_or_404(User, id=id_usuario)
+        grupo.user_set.remove(user)
+    return redirect('ver_usuarios_grupo', id_grupo=id_grupo)

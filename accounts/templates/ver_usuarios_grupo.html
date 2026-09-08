@@ -1,0 +1,100 @@
+{% extends 'layouts/base.html' %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto px-4 py-8">
+    <!-- Encabezado de la página -->
+    <div class="flex items-center justify-between mb-8 border-b border-slate-200 pb-4">
+        <div>
+            <h2 class="text-2xl font-bold text-slate-800 flex items-center gap-3">
+                <i class="fa-solid fa-users-gear text-indigo-600"></i>
+                Usuarios del grupo: <span class="text-indigo-600">{{ grupo.name }}</span>
+            </h2>
+            <p class="text-sm text-slate-500 mt-1">Gestiona los miembros asignados y agrega nuevos integrantes a este grupo.</p>
+        </div>
+        <a href="{% url 'grupos' %}" class="inline-flex items-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-medium px-4 py-2 rounded-lg transition-colors duration-200 shadow-sm">
+            <i class="fa-solid fa-arrow-left text-xs"></i> Volver a Grupos
+        </a>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Lista de usuarios en el grupo (Ocupa 2 columnas en pantallas grandes) -->
+        <div class="lg:col-span-2 bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="px-6 py-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
+                <h3 class="font-semibold text-slate-800 flex items-center gap-2">
+                    <i class="fa-solid fa-user-check text-emerald-600"></i> Usuarios actuales
+                </h3>
+                <span class="bg-indigo-100 text-indigo-700 text-xs font-semibold px-2.5 py-0.5 rounded-full">
+                    {{ usuarios_grupo|length }}
+                </span>
+            </div>
+
+            <div class="p-6">
+                {% if usuarios_grupo %}
+                    <ul class="divide-y divide-slate-100">
+                        {% for usuario in usuarios_grupo %}
+                            <li class="py-3 flex items-center justify-between hover:bg-slate-50/50 px-3 rounded-lg transition-colors">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-9 h-9 rounded-full bg-indigo-50 text-indigo-600 font-bold flex items-center justify-center text-sm border border-indigo-100">
+                                        {{ usuario.username|first|upper }}
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-medium text-slate-800">{{ usuario.username }}</p>
+                                        <p class="text-xs text-slate-500">{{ usuario.email|default:"Sin correo registrado" }}</p>
+                                    </div>
+                                </div>
+                                <form method="POST" action="{% url 'remover_usuario_grupo' grupo.id usuario.id %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="inline-flex items-center gap-1.5 text-xs font-medium text-red-600 hover:text-red-700 bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-lg transition-colors border border-red-100" title="Quitar usuario">
+                                        <i class="fa-solid fa-user-minus"></i> Quitar
+                                    </button>
+                                </form>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <div class="text-center py-8">
+                        <div class="w-12 h-12 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fa-solid fa-user-slash text-lg"></i>
+                        </div>
+                        <p class="text-sm text-slate-500 font-medium">No hay usuarios asignados a este grupo.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Agregar usuario al grupo (Ocupa 1 columna) -->
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 h-fit">
+            <div class="px-6 py-4 bg-slate-50 border-b border-slate-200">
+                <h3 class="font-semibold text-slate-800 flex items-center gap-2">
+                    <i class="fa-solid fa-user-plus text-indigo-600"></i> Agregar usuario
+                </h3>
+            </div>
+
+            <div class="p-6">
+                {% if usuarios_disponibles %}
+                    <form method="POST" action="{% url 'agregar_usuario_grupo' grupo.id %}" class="space-y-4">
+                        {% csrf_token %}
+                        <div>
+                            <label for="usuario_id" class="block text-xs font-medium text-slate-600 mb-2">Seleccionar usuario disponible</label>
+                            <select name="usuario_id" id="usuario_id" class="w-full bg-slate-50 border border-slate-300 text-slate-800 text-sm rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 block p-2.5 outline-none transition-all" required>
+                                <option value="" selected disabled>Selecciona un usuario...</option>
+                                {% for usuario in usuarios_disponibles %}
+                                    <option value="{{ usuario.id }}">{{ usuario.username }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <button type="submit" class="w-full inline-flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-sm px-4 py-2.5 rounded-lg transition-colors shadow-sm shadow-indigo-200">
+                            <i class="fa-solid fa-plus text-xs"></i> Agregar al grupo
+                        </button>
+                    </form>
+                {% else %}
+                    <div class="text-center py-6">
+                        <i class="fa-solid fa-circle-check text-emerald-500 text-2xl mb-2"></i>
+                        <p class="text-xs text-slate-500 font-medium">Todos los usuarios disponibles ya pertenecen a este grupo.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
